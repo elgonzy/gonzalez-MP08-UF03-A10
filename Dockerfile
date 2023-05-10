@@ -23,10 +23,17 @@ RUN sed -i 's/#write_enable=YES/write_enable=YES/' /etc/vsftpd.conf && \
     sed -i '$a\local_root=/home/$USER/ftp' /etc/vsftpd.conf && \
     sed -i '$a\userlist_enable=YES' /etc/vsftpd.conf && \
     sed -i '$a\userlist_file=/etc/vsftpd.userlist' /etc/vsftpd.conf && \
-    sed -i '$a\userlist_deny=NO' /etc/vsftpd.conf
+    sed -i '$a\userlist_deny=NO' /etc/vsftpd.conf && \
+    sed -i '$a\allow_writeable_chroot=YES' /etc/vsftpd.conf
 
 # Add user to vsftpd userlist
 RUN echo "adri" >> /etc/vsftpd.userlist
+
+# Create secure_chroot_dir and set ownership to root
+RUN mkdir -p /var/run/vsftpd/empty && chown root.root /var/run/vsftpd/empty
+
+# Create ftp directory and set ownership to adri
+RUN mkdir /home/adri/ftp && chown adri.adri /home/adri/ftp
 
 # Expose FTP ports
 EXPOSE 21 30000-30009
